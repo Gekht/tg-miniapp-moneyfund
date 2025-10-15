@@ -3,24 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MoneyFund — Mini App</title>
+  <title>MoneyFund Mini‑App</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>MoneyFund</h1>
-    <p class="muted">Отметь перевод и (по желанию) сумму</p>
+  <main class="card">
+    <h1>Отметить перевод</h1>
+    <div id="cid-line" class="muted"></div>
 
-    <label>Сумма (тенге)</label>
-    <input id="amount" type="number" placeholder="Например, 5000" />
+    <label>Сумма (необязательно)</label>
+    <input id="amount" type="text" placeholder="Например, 5000" />
 
-    <label>Комментарий</label>
-    <input id="note" type="text" placeholder="(необязательно)" />
+    <label>Комментарий (необязательно)</label>
+    <input id="note" type="text" placeholder="Например, на подарок" />
 
     <button id="submit">Отправить</button>
-    <p id="status" class="status"></p>
-  </div>
+
+    <div id="admin-create" class="admin hide">
+      <h2>Создать сбор (админ)</h2>
+      <label>Заголовок</label>
+      <input id="c_title" type="text" placeholder="День рождения Оли" />
+      <label>Сборщик</label>
+      <input id="c_collector" type="text" placeholder="Егор" />
+      <label>Реквизиты</label>
+      <input id="c_requisites" type="text" placeholder="Kaspi ..." />
+      <button id="create">Создать сбор</button>
+    </div>
+
+    <p id="status" class="muted"></p>
+  </main>
 
   <script src="app.js"></script>
 </body>
