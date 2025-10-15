@@ -1,6 +1,32 @@
 const tg = window.Telegram.WebApp;
 tg.expand();
 
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// меню ↔ форма
+document.getElementById('menu-create')?.addEventListener('click', ()=> show('screen-create'));
+document.getElementById('back-menu')?.addEventListener('click', ()=> show('screen-menu'));
+
+// действия по последнему сбору — шлём в бота web_app_data
+document.getElementById('menu-remind')?.addEventListener('click', ()=>{
+  tg.sendData(JSON.stringify({ t: 'remind_last' }));
+  document.getElementById('menu-status').textContent = 'Отправил команду напоминания…';
+});
+
+document.getElementById('menu-report')?.addEventListener('click', ()=>{
+  tg.sendData(JSON.stringify({ t: 'report_last' }));
+  document.getElementById('menu-status').textContent = 'Запросил отчёт…';
+});
+
+// оставь весь твой существующий код create-формы,
+// только он теперь находится на экране #screen-create
+
 // ----- парсим участников из m= -----
 const qs = new URLSearchParams(location.search);
 const membersParam = qs.get("m") || "";
