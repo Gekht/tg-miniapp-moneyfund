@@ -61,7 +61,7 @@ button{
 
 .muted{ color:var(--hint); font-size:13px; }
 
-/* список исключений */
+/* контейнер списка */
 .checks{
   display:flex;
   flex-direction:column;
@@ -74,37 +74,41 @@ button{
   overflow:auto;
 }
 
-/* строка: чекбокс | имя (растягивается) | id (справа) */
+/* строка: чекбокс | имя (растягивается) | id справа */
 .check-item{
-  display:grid;
-  grid-template-columns: 24px 1fr auto;
+  display:flex;               /* вместо grid */
   align-items:center;
   gap:10px;
   padding:10px 12px;
   border-radius:10px;
   background:transparent;
   border: 1px solid var(--border);
-  min-height: 44px;
+  min-height:44px;
+  width:100%;
 }
 
 .check-item input[type="checkbox"]{
+  flex:0 0 auto;
   width:18px; height:18px;
-  transform:none;
   accent-color: var(--button);
 }
 
 .check-item .name{
+  flex:1 1 auto;
+  min-width:0;                /* критично для iOS */
+  white-space:nowrap;         /* не переносить по буквам */
   overflow:hidden;
   text-overflow:ellipsis;
-  white-space:nowrap;     /* не даём имени ломаться по буквам */
-  word-break:normal;
   line-height:1.2;
 }
 
 .check-item .id{
+  flex:0 0 auto;
   color: var(--hint);
   font-size:12px;
-  margin-left:8px;
   white-space:nowrap;
+  margin-left:8px;
 }
 
+/* чтобы iOS не увеличивал/не менял межбуквенный */
+* { -webkit-text-size-adjust: 100%; }
