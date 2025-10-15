@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoneyFund — Mini App</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>MoneyFund</h1>
+    <p class="muted">Отметь перевод и (по желанию) сумму</p>
+
+    <label>Сумма (тенге)</label>
+    <input id="amount" type="number" placeholder="Например, 5000" />
+
+    <label>Комментарий</label>
+    <input id="note" type="text" placeholder="(необязательно)" />
+
+    <button id="submit">Отправить</button>
+    <p id="status" class="status"></p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
