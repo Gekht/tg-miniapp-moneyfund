@@ -1,3 +1,62 @@
+// --- переключение панелей ---
+function showSection(name) {
+  const menu = document.getElementById('menu');
+  const create = document.getElementById('create');
+  if (name === 'create') {
+    menu.classList.add('hidden');
+    create.classList.remove('hidden');
+  } else {
+    create.classList.add('hidden');
+    menu.classList.remove('hidden');
+  }
+}
+
+// начальное состояние: показываем меню
+showSection('menu');
+
+// кнопки меню
+document.getElementById('btn-open-create').addEventListener('click', () => {
+  showSection('create');
+});
+
+document.getElementById('btn-remind-last').addEventListener('click', () => {
+  tg.sendData(JSON.stringify({ t: 'remind_last' }));   // бот отправит напоминания по последнему сбору
+  tg.close();
+});
+
+document.getElementById('btn-report-last').addEventListener('click', () => {
+  tg.sendData(JSON.stringify({ t: 'report_last' }));   // бот пришлёт отчёт по последнему
+  tg.close();
+});
+
+// кнопка «назад» из формы
+document.getElementById('btn-back').addEventListener('click', () => {
+  showSection('menu');
+});
+
+// отправка «создать сбор»
+document.getElementById('create-submit').addEventListener('click', () => {
+  const excludeIds = [...document.querySelectorAll('#exclude-list input:checked')].map(el => el.value).join(',');
+  const payload = {
+    t: 'create_collection',
+    exclude: excludeIds,
+    title: document.getElementById('c_title').value.trim(),
+    collector: document.getElementById('c_collector').value.trim(),
+    beneficiary: document.getElementById('c_beneficiary').value.trim(),
+    target: document.getElementById('c_target').value.trim(),
+    requisites: document.getElementById('c_requisites').value.trim(),
+    copy_text: document.getElementById('c_copy').value.trim(),
+  };
+
+  if (!payload.title || !payload.collector || !payload.requisites) {
+    document.getElementById('status').textContent = 'Название, сборщик и реквизиты — обязательны.';
+    return;
+  }
+
+  tg.sendData(JSON.stringify(payload));
+  tg.close();
+});
+
 const tg = window.Telegram.WebApp;
 tg.expand();
 
