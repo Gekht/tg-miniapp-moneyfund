@@ -19,9 +19,10 @@ try {
 
 const exclBox = document.getElementById("exclude-list");
 function renderMembers(list) {
-  exclBox.innerHTML = "";
+  const box = document.getElementById("exclude-list");
+  box.innerHTML = "";
   if (!list.length) {
-    exclBox.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились чекбоксы.</div>`;
+    box.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились чекбоксы.</div>`;
     return;
   }
   list.forEach(m => {
@@ -32,9 +33,10 @@ function renderMembers(list) {
       <div class="name">${m.name}</div>
       <div class="id">${m.id}</div>
     `;
-    exclBox.appendChild(row);
+    box.appendChild(row);
   });
 }
+
 
 
 // переключатель «выбрать/снять всех»
