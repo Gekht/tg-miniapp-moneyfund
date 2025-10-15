@@ -25,16 +25,17 @@ function renderMembers(list) {
     return;
   }
   list.forEach(m => {
-    const div = document.createElement("label");
-    div.className = "check-item";
-    div.innerHTML = `
+    const row = document.createElement("div");
+    row.className = "check-item";
+    row.innerHTML = `
       <input type="checkbox" value="${m.id}">
-      <span>${m.name} <i class="mid">${m.id}</i></span>
+      <div class="name">${m.name}</div>
+      <div class="id">${m.id}</div>
     `;
-    exclBox.appendChild(div);
+    exclBox.appendChild(row);
   });
 }
-renderMembers(members);
+
 
 // переключатель «выбрать/снять всех»
 document.getElementById("toggle-all").addEventListener("click", () => {
