@@ -156,3 +156,17 @@ button{
   width:auto;
 }
 .sep{ border:none; border-top:1px solid var(--border); margin:12px 0; }
+
+.hidden { display: none !important; }
+
+.panel { max-width: 720px; margin: 0 auto; }
+.field { margin: 14px 0; }
+.field label { display:block; margin-bottom:6px; opacity:.8; }
+.status { margin:10px 0; opacity:.8; }
+.btn { width:100%; padding:14px 16px; border-radius:14px; border:none; }
+.btn-primary { background:#2a82ff; color:#fff; }
+.btn-secondary { background:#333; color:#fff; }
+.btn-ghost { background:transparent; color:#aaa; }
+.exclude-list { display:flex; flex-direction:column; gap:8px; padding:8px 0; }
+.exclude-item { display:flex; align-items:center; gap:10px; justify-content:space-between; }
+
