@@ -5,9 +5,8 @@ tg.expand();
 const qs = new URLSearchParams(location.search);
 const membersParam = qs.get("m") || "";
 const members = [];
-
 try {
-  const raw = decodeURIComponent(membersParam); // "id:Имя,id:Имя,..."
+  const raw = decodeURIComponent(membersParam); // "id:Имя,id:Имя"
   raw.split(",").forEach(s => {
     const i = s.indexOf(":");
     if (i > 0) {
@@ -17,42 +16,50 @@ try {
     }
   });
 } catch (e) {
-  // игнорим: список останется пустым
+  console.warn("Не смог распарсить m=", e);
 }
 
-// ----- рендер чекбоксов -----
-const exclBox = document.getElementById("exclude-list");
-function renderMembers(list) {
-  row.innerHTML = `
-  <input type="checkbox" value="${m.id}">
-  <span class="name">${m.name}</span>
-  <span class="id">${m.id}</span>
-`;
+// ----- рендерим мультиселект -----
+const exclWrap = document.getElementById("exclude-list");
+
+function renderMembersSelect(list) {
+  exclWrap.innerHTML = "";
+  if (!list.length) {
+    exclWrap.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились участники.</div>`;
+    return;
   }
+  const sel = document.createElement("select");
+  sel.id = "excludeSelect";
+  sel.className = "multiselect";
+  sel.multiple = true;
+  // высота по количеству, но не выше 8 строк
+  sel.size = Math.min(list.length, 8);
+
   list.forEach(m => {
-    const row = document.createElement("div");
-    row.className = "check-item";
-    row.innerHTML = `
-      <input type="checkbox" value="${m.id}">
-      <div class="name">${m.name}</div>
-      <div class="id">${m.id}</div>
-    `;
-    exclBox.appendChild(row);
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = `${m.name} — ${m.id}`;
+    sel.appendChild(opt);
   });
+
+  exclWrap.appendChild(sel);
 }
-renderMembers(members);
+renderMembersSelect(members);
 
 // выбрать/снять всех
-document.getElementById("toggle-all").addEventListener("click", () => {
-  const boxes = exclBox.querySelectorAll('input[type="checkbox"]');
-  const allChecked = [...boxes].every(b => b.checked);
-  boxes.forEach(b => (b.checked = !allChecked));
+document.getElementById("toggle-all")?.addEventListener("click", () => {
+  const sel = document.getElementById("excludeSelect");
+  if (!sel) return;
+  const allSelected = sel.options.length && Array.from(sel.options).every(o => o.selected);
+  Array.from(sel.options).forEach(o => o.selected = !allSelected);
 });
 
 
 // отправка данных на бота
 document.getElementById("create").addEventListener("click", () => {
-  const excludeIds = [...document.querySelectorAll('#exclude-list input:checked')].map(el => el.value).join(',');
+  const sel = document.getElementById("excludeSelect");
+  const excludeIds = sel ? Array.from(sel.selectedOptions).map(o => o.value).join(',') : '';
+
   const payload = {
     t: "create_collection",
     exclude: excludeIds, // отправляем только ID
