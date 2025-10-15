@@ -112,3 +112,22 @@ button{
 
 /* чтобы iOS не увеличивал/не менял межбуквенный */
 * { -webkit-text-size-adjust: 100%; }
+/* ====== мультиселект для исключений ====== */
+.multiselect {
+  width:100%;
+  border:1px solid var(--border);
+  background:var(--field);
+  color:var(--text);
+  border-radius:12px;
+  padding:8px;
+  min-height:120px;      /* высота коробки */
+  outline:none;
+}
+.multiselect option {
+  padding:8px 10px;
+  border-radius:8px;
+}
+.multiselect option:checked {
+  background: var(--button);
+  color: var(--button-text);
+}
