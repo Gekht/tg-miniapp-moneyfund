@@ -1,64 +1,51 @@
 <!doctype html>
-<!-- ЭКРАН: МЕНЮ -->
-<div id="screen-menu" class="screen active">
-  <h2>Меню</h2>
-  <button id="menu-create" class="btn primary">Создать новый сбор</button>
-  <button id="menu-remind" class="btn">Напомнить тем, кто не ответил (последний)</button>
-  <button id="menu-report" class="btn">Список кто скинул / воздержался (последний)</button>
-  <div id="menu-status" class="muted" style="margin-top:8px;"></div>
-  <hr class="sep">
-</div>
+<!-- МЕНЮ -->
+<section id="menu" class="panel">
+  <button id="btn-open-create" class="btn btn-primary">Создать новый сбор</button>
+  <button id="btn-remind-last" class="btn">Напомнить тем, кто не ответил (последний)</button>
+  <button id="btn-report-last" class="btn">Список кто скинул / воздержался (последний)</button>
+</section>
 
-<!-- ЭКРАН: СОЗДАТЬ (твоя текущая форма) -->
-<div id="screen-create" class="screen">
-  <!-- тут остаётся твой текущий блок "Создать сбор" со всеми полями -->
-  <!-- ... -->
-  <!-- кнопка "Создать сбор" уже есть; id="create" оставляем -->
-  <!-- ... -->
-  <button type="button" id="back-menu" class="btn link">← Назад в меню</button>
-</div>
+<!-- СОЗДАТЬ СБОР -->
+<section id="create" class="panel hidden">
+  <button id="btn-back" class="btn btn-ghost">← назад</button>
 
-<!-- обнови версию, чтобы сбить кэш -->
-<script src="app.js?v=8"></script>
-
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Создать сбор — MoneyFund</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-  <main class="card">
-    <h1>Создать сбор</h1>
-
+  <div class="field">
     <label>Кому НЕ отправлять</label>
-    <div id="exclude-list" class="checks"></div>
-    <button id="toggle-all" class="link-btn">Выбрать/снять всех</button>
+    <div id="exclude-list" class="exclude-list"></div>
+    <button id="btn-toggle-all" class="btn btn-secondary">Выбрать/снять всех</button>
+  </div>
 
+  <div class="field">
     <label>Название</label>
-    <input id="c_title" type="text" placeholder="День рождения Оли" />
+    <input id="c_title" type="text" placeholder="День рождения Оли">
+  </div>
 
+  <div class="field">
     <label>Кто собирает</label>
-    <input id="c_collector" type="text" placeholder="Егор" />
+    <input id="c_collector" type="text" placeholder="Егор">
+  </div>
 
+  <div class="field">
     <label>Кому собираем</label>
-    <input id="c_beneficiary" type="text" placeholder="Оля" />
+    <input id="c_beneficiary" type="text" placeholder="Оля">
+  </div>
 
+  <div class="field">
     <label>Сумма/цель (необязательно)</label>
-    <input id="c_target" type="text" placeholder="Например, 50 000" />
+    <input id="c_target" type="text" placeholder="Например, 50 000">
+  </div>
 
+  <div class="field">
     <label>Реквизиты (кратко)</label>
-    <input id="c_requisites" type="text" placeholder="Kaspi 8 777 000 00 00" />
+    <input id="c_requisites" type="text" placeholder="Kaspi 8 777 000 00 00">
+  </div>
 
+  <div class="field">
     <label>Текст для копирования (можно длинный)</label>
     <textarea id="c_copy" rows="4" placeholder="Kaspi… Имя получателя… Комментарий к переводу…"></textarea>
+  </div>
 
-    <button id="create">Создать сбор</button>
-    <p id="status" class="muted"></p>
-  </main>
-
-  <script src="app.js?v=5"></script>
-</body>
-</html>
+  <div id="status" class="status"></div>
+  <button id="create-submit" class="btn btn-primary">Создать сбор</button>
+</section>
