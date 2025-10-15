@@ -1,51 +1,102 @@
-// --- переключение панелей ---
-function showSection(name) {
-  const menu = document.getElementById('menu');
-  const create = document.getElementById('create');
-  if (name === 'create') {
-    menu.classList.add('hidden');
-    create.classList.remove('hidden');
-  } else {
-    create.classList.add('hidden');
-    menu.classList.remove('hidden');
-  }
+// Telegram WebApp bootstrap
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.expand();
+  tg.ready();
 }
 
-// начальное состояние: показываем меню
-showSection('menu');
+// -------- UI panels
+const panelMenu   = document.getElementById('menu');
+const panelCreate = document.getElementById('create');
 
-// кнопки меню
-document.getElementById('btn-open-create').addEventListener('click', () => {
-  showSection('create');
+const showPanel = (which) => {
+  panelMenu.classList.toggle('hidden', which !== 'menu');
+  panelCreate.classList.toggle('hidden', which !== 'create');
+  panelCreate.setAttribute('aria-hidden', which !== 'create');
+};
+
+document.getElementById('btn-open-create').addEventListener('click', () => showPanel('create'));
+document.getElementById('btn-back').addEventListener('click', () => showPanel('menu'));
+
+// -------- members list from URL (?m=uid:Имя,uid:Имя,…)
+function getUrlParams() {
+  const p = new URLSearchParams(location.search);
+  return {
+    cid: p.get('cid') || '',
+    m:   p.get('m')   || ''
+  };
+}
+
+function renderExcludeList(mParam) {
+  const box = document.getElementById('exclude-list');
+  box.innerHTML = '';
+
+  if (!mParam) return;
+
+  const parts = mParam.split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  parts.forEach(item => {
+    const [id, ...nameParts] = item.split(':');
+    const name = nameParts.join(':') || id;
+
+    const row = document.createElement('label');
+    row.className = 'exclude-item';
+
+    const cb  = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = id;
+
+    const nm = document.createElement('span');
+    nm.className = 'exclude-name';
+    nm.textContent = name;
+
+    const idSmall = document.createElement('span');
+    idSmall.className = 'exclude-id';
+    idSmall.textContent = id;
+
+    row.append(cb, nm, idSmall);
+    box.appendChild(row);
+  });
+}
+
+(function initFromUrl(){
+  const {cid, m} = getUrlParams();
+  renderExcludeList(m);
+  // если хотим открывать сразу создание
+  if (cid || m) showPanel('create');
+})();
+
+// toggle all
+document.getElementById('btn-toggle-all').addEventListener('click', () => {
+  const boxes = [...document.querySelectorAll('#exclude-list input[type="checkbox"]')];
+  const someUnchecked = boxes.some(b => !b.checked);
+  boxes.forEach(b => { b.checked = someUnchecked; });
 });
 
+// -------- Menu buttons (remind/report last)
 document.getElementById('btn-remind-last').addEventListener('click', () => {
-  tg.sendData(JSON.stringify({ t: 'remind_last' }));   // бот отправит напоминания по последнему сбору
-  tg.close();
+  sendData({ t: 'remind_last' });
 });
-
 document.getElementById('btn-report-last').addEventListener('click', () => {
-  tg.sendData(JSON.stringify({ t: 'report_last' }));   // бот пришлёт отчёт по последнему
-  tg.close();
+  sendData({ t: 'report_last' });
 });
 
-// кнопка «назад» из формы
-document.getElementById('btn-back').addEventListener('click', () => {
-  showSection('menu');
-});
-
-// отправка «создать сбор»
+// -------- Create submit
 document.getElementById('create-submit').addEventListener('click', () => {
-  const excludeIds = [...document.querySelectorAll('#exclude-list input:checked')].map(el => el.value).join(',');
+  const excludeIds = [...document.querySelectorAll('#exclude-list input:checked')]
+    .map(el => el.value).join(',');
+
   const payload = {
     t: 'create_collection',
     exclude: excludeIds,
-    title: document.getElementById('c_title').value.trim(),
-    collector: document.getElementById('c_collector').value.trim(),
+    title:       document.getElementById('c_title').value.trim(),
+    collector:   document.getElementById('c_collector').value.trim(),
     beneficiary: document.getElementById('c_beneficiary').value.trim(),
-    target: document.getElementById('c_target').value.trim(),
-    requisites: document.getElementById('c_requisites').value.trim(),
-    copy_text: document.getElementById('c_copy').value.trim(),
+    target:      document.getElementById('c_target').value.trim(),
+    requisites:  document.getElementById('c_requisites').value.trim(),
+    copy_text:   document.getElementById('c_copy').value.trim(),
   };
 
   if (!payload.title || !payload.collector || !payload.requisites) {
@@ -53,114 +104,17 @@ document.getElementById('create-submit').addEventListener('click', () => {
     return;
   }
 
-  tg.sendData(JSON.stringify(payload));
-  tg.close();
+  sendData(payload);
 });
 
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-// меню ↔ форма
-document.getElementById('menu-create')?.addEventListener('click', ()=> show('screen-create'));
-document.getElementById('back-menu')?.addEventListener('click', ()=> show('screen-menu'));
-
-// действия по последнему сбору — шлём в бота web_app_data
-document.getElementById('menu-remind')?.addEventListener('click', ()=>{
-  tg.sendData(JSON.stringify({ t: 'remind_last' }));
-  document.getElementById('menu-status').textContent = 'Отправил команду напоминания…';
-});
-
-document.getElementById('menu-report')?.addEventListener('click', ()=>{
-  tg.sendData(JSON.stringify({ t: 'report_last' }));
-  document.getElementById('menu-status').textContent = 'Запросил отчёт…';
-});
-
-// оставь весь твой существующий код create-формы,
-// только он теперь находится на экране #screen-create
-
-// ----- парсим участников из m= -----
-const qs = new URLSearchParams(location.search);
-const membersParam = qs.get("m") || "";
-const members = [];
-try {
-  const raw = decodeURIComponent(membersParam); // "id:Имя,id:Имя"
-  raw.split(",").forEach(s => {
-    const i = s.indexOf(":");
-    if (i > 0) {
-      const id = s.slice(0, i).trim();
-      const name = s.slice(i + 1).trim();
-      if (id) members.push({ id, name });
-    }
-  });
-} catch (e) {
-  console.warn("Не смог распарсить m=", e);
-}
-
-// ----- рендерим мультиселект -----
-const exclWrap = document.getElementById("exclude-list");
-
-function renderMembersSelect(list) {
-  exclWrap.innerHTML = "";
-  if (!list.length) {
-    exclWrap.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились участники.</div>`;
-    return;
+// helper to send data to the bot
+function sendData(obj){
+  if (tg && tg.sendData) {
+    tg.sendData(JSON.stringify(obj));
+    // закрываем только на create, меню пусть остаётся
+    if (obj.t === 'create_collection') tg.close();
+  } else {
+    // для локальной отладки
+    alert('Отправка:\n' + JSON.stringify(obj, null, 2));
   }
-  const sel = document.createElement("select");
-  sel.id = "excludeSelect";
-  sel.className = "multiselect";
-  sel.multiple = true;
-  // высота по количеству, но не выше 8 строк
-  sel.size = Math.min(list.length, 8);
-
-  list.forEach(m => {
-    const opt = document.createElement("option");
-    opt.value = m.id;
-    opt.textContent = `${m.name} — ${m.id}`;
-    sel.appendChild(opt);
-  });
-
-  exclWrap.appendChild(sel);
 }
-renderMembersSelect(members);
-
-// выбрать/снять всех
-document.getElementById("toggle-all")?.addEventListener("click", () => {
-  const sel = document.getElementById("excludeSelect");
-  if (!sel) return;
-  const allSelected = sel.options.length && Array.from(sel.options).every(o => o.selected);
-  Array.from(sel.options).forEach(o => o.selected = !allSelected);
-});
-
-
-// отправка данных на бота
-document.getElementById("create").addEventListener("click", () => {
-  const sel = document.getElementById("excludeSelect");
-  const excludeIds = sel ? Array.from(sel.selectedOptions).map(o => o.value).join(',') : '';
-
-  const payload = {
-    t: "create_collection",
-    exclude: excludeIds, // отправляем только ID
-    title: document.getElementById("c_title").value.trim(),
-    collector: document.getElementById("c_collector").value.trim(),
-    beneficiary: document.getElementById("c_beneficiary").value.trim(),
-    target: document.getElementById("c_target").value.trim(),
-    requisites: document.getElementById("c_requisites").value.trim(),
-    copy_text: document.getElementById("c_copy").value.trim(),
-  };
-
-  if (!payload.title || !payload.collector || !payload.requisites) {
-    document.getElementById("status").textContent = "Название, сборщик и реквизиты — обязательны.";
-    return;
-  }
-
-  tg.sendData(JSON.stringify(payload));
-  tg.close();
-});
