@@ -3,42 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MoneyFund Mini-App</title>
+  <title>Создать сбор — MoneyFund</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <main class="card">
-    <h1>Отметить перевод</h1>
-    <div id="cid-line" class="muted"></div>
+    <h1>Создать сбор</h1>
 
-    <label>Сумма (необязательно)</label>
-    <input id="amount" type="text" placeholder="Например, 5000" />
+    <label>Кому НЕ отправлять</label>
+    <div id="exclude-list" class="checks"></div>
+    <button id="toggle-all" class="link-btn">Выбрать/снять всех</button>
 
-    <label>Комментарий (необязательно)</label>
-    <input id="note" type="text" placeholder="Например, на подарок" />
-
-    <button id="submit">Отправить</button>
-
-    <div class="sep"></div>
-
-    <h2>Создать сбор</h2>
-    <label>Кому НЕ отправлять (ID или @user через запятую)</label>
-    <input id="excl" type="text" placeholder="@vasya,332627915,me" />
     <label>Название</label>
     <input id="c_title" type="text" placeholder="День рождения Оли" />
+
     <label>Кто собирает</label>
     <input id="c_collector" type="text" placeholder="Егор" />
+
     <label>Кому собираем</label>
     <input id="c_beneficiary" type="text" placeholder="Оля" />
-    <label>Сумма/Цель (необязательно)</label>
+
+    <label>Сумма/цель (необязательно)</label>
     <input id="c_target" type="text" placeholder="Например, 50 000" />
+
     <label>Реквизиты (кратко)</label>
     <input id="c_requisites" type="text" placeholder="Kaspi 8 777 000 00 00" />
-    <label>Текст для копирования (можно длинный)</label>
-    <textarea id="c_copy" rows="3" placeholder="Kaspi... Имя... Комментарий..."></textarea>
-    <button id="create">Создать сбор</button>
 
+    <label>Текст для копирования (можно длинный)</label>
+    <textarea id="c_copy" rows="4" placeholder="Kaspi… Имя получателя… Комментарий к переводу…"></textarea>
+
+    <button id="create">Создать сбор</button>
     <p id="status" class="muted"></p>
   </main>
 
