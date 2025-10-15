@@ -1,26 +1,20 @@
-// MoneyFund Mini-App (создание сбора + чекбоксы исключений)
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-// Берём список участников из параметра m (id:Имя,id:Имя,...) — URL-encoded
 const qs = new URLSearchParams(location.search);
 const membersEncoded = qs.get("m") || "";
 const members = [];
+
 try {
-  // допускаем и base64, и url-строку — на всякий
-  let raw = decodeURIComponent(membersEncoded || "");
-  if (/^[A-Za-z0-9+/=]+$/.test(raw)) {
-    // похоже на base64 — попробуем раскодировать
-    raw = atob(raw);
-  }
-  // формат: id:Имя,id:Имя
+  // формат m: URL-encoded строка "id:Имя,id:Имя,..."
+  const raw = decodeURIComponent(membersEncoded);
   raw.split(",").forEach(pair => {
     const [id, ...nameParts] = pair.split(":");
     const name = nameParts.join(":");
     if (id && name) members.push({ id: id.trim(), name: name.trim() });
   });
-} catch (e) {
-  // тихо игнорим — список просто будет пустой
+} catch(e) {
+  // оставим пустым список — мини-ап покажет подсказку
 }
 
 const exclBox = document.getElementById("exclude-list");
@@ -42,17 +36,19 @@ function renderMembers(list) {
 }
 renderMembers(members);
 
+// переключатель «выбрать/снять всех»
 document.getElementById("toggle-all").addEventListener("click", () => {
   const boxes = exclBox.querySelectorAll('input[type="checkbox"]');
   const allChecked = [...boxes].every(b => b.checked);
   boxes.forEach(b => b.checked = !allChecked);
 });
 
+// отправка данных на бота
 document.getElementById("create").addEventListener("click", () => {
   const excludeIds = [...document.querySelectorAll('#exclude-list input:checked')].map(el => el.value).join(',');
   const payload = {
     t: "create_collection",
-    exclude: excludeIds, // отправляем только id
+    exclude: excludeIds, // отправляем только ID
     title: document.getElementById("c_title").value.trim(),
     collector: document.getElementById("c_collector").value.trim(),
     beneficiary: document.getElementById("c_beneficiary").value.trim(),
@@ -61,7 +57,6 @@ document.getElementById("create").addEventListener("click", () => {
     copy_text: document.getElementById("c_copy").value.trim(),
   };
 
-  // простая валидация
   if (!payload.title || !payload.collector || !payload.requisites) {
     document.getElementById("status").textContent = "Название, сборщик и реквизиты — обязательны.";
     return;
