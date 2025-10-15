@@ -1,14 +1,77 @@
+:root{
+  /* Telegram WebApp theme vars с запасными значениями */
+  --bg: var(--tg-theme-bg-color, #111);
+  --text: var(--tg-theme-text-color, #eee);
+  --hint: var(--tg-theme-hint-color, #aaa);
+  --link: var(--tg-theme-link-color, #8fb4ff);
+  --button: var(--tg-theme-button-color, #2a7af6);
+  --button-text: var(--tg-theme-button-text-color, #fff);
+  --section: #1b1b1b;
+  --border: #2a2a2a;
+  --field: #0f0f0f;
+}
+
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  width:100%;
+  max-width:560px;
+  background: var(--section);
+  border: 1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+h1{ margin:0 0 12px; font-size:22px; line-height:1.2; }
+label{ display:block; margin:12px 0 6px; color:var(--hint); font-size:14px; }
+
+input, textarea, button{ font-size:16px; } /* фикс zoom на iOS */
+input, textarea{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--field);
+  color:var(--text);
+  outline:none;
+}
+
+button{
+  margin-top:14px;
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:0;
+  background:var(--button);
+  color:var(--button-text);
+  font-weight:600;
+}
+
+.muted{ color:var(--hint); font-size:13px; }
+
 /* список исключений */
 .checks{
-  display:grid;
-  grid-template-columns:1fr;
+  display:flex;
+  flex-direction:column;
   gap:8px;
-  background:#141414;
-  border:1px solid #2a2a2a;
+  background: var(--field);
+  border:1px solid var(--border);
   border-radius:12px;
   padding:10px;
-  max-height:220px;          /* список не разъезжается */
-  overflow:auto;             /* и прокручивается */
+  max-height:230px;   /* компактная высота */
+  overflow:auto;      /* прокрутка */
 }
 
 .check-item{
@@ -17,26 +80,34 @@
   gap:10px;
   padding:10px 12px;
   border-radius:10px;
-  background:#0f0f0f;
-  border:1px solid #272727;
-  line-height:1.25;
+  background:transparent;
+  border: 1px solid var(--border);
 }
 
 .check-item input[type="checkbox"]{
-  transform:scale(1.2);
-  margin-top:2px;
-  accent-color:#2a7af6;     /* видимый синий чекбокс */
+  transform: scale(1.15);
+  margin-top:3px;
+  accent-color: var(--button);
 }
 
 .check-item .name{
   flex:1;
-  color:#eee;
-  white-space:normal;        /* перенос длинных имён */
-  word-break:break-word;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .check-item .id{
-  color:#9aa3b2;
+  color: var(--hint);
   font-size:12px;
   margin-left:8px;
+}
+
+.link-btn{
+  margin:8px 0 0 0;
+  background:none;
+  border:0;
+  color:var(--link);
+  text-decoration:underline;
+  padding:0;
+  width:auto;
 }
