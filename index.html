@@ -1,4 +1,26 @@
 <!doctype html>
+<!-- ЭКРАН: МЕНЮ -->
+<div id="screen-menu" class="screen active">
+  <h2>Меню</h2>
+  <button id="menu-create" class="btn primary">Создать новый сбор</button>
+  <button id="menu-remind" class="btn">Напомнить тем, кто не ответил (последний)</button>
+  <button id="menu-report" class="btn">Список кто скинул / воздержался (последний)</button>
+  <div id="menu-status" class="muted" style="margin-top:8px;"></div>
+  <hr class="sep">
+</div>
+
+<!-- ЭКРАН: СОЗДАТЬ (твоя текущая форма) -->
+<div id="screen-create" class="screen">
+  <!-- тут остаётся твой текущий блок "Создать сбор" со всеми полями -->
+  <!-- ... -->
+  <!-- кнопка "Создать сбор" уже есть; id="create" оставляем -->
+  <!-- ... -->
+  <button type="button" id="back-menu" class="btn link">← Назад в меню</button>
+</div>
+
+<!-- обнови версию, чтобы сбить кэш -->
+<script src="app.js?v=8"></script>
+
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
