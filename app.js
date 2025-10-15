@@ -1,28 +1,31 @@
 const tg = window.Telegram.WebApp;
 tg.expand();
 
+// ----- парсим участников из m= -----
 const qs = new URLSearchParams(location.search);
-const membersEncoded = qs.get("m") || "";
+const membersParam = qs.get("m") || "";
 const members = [];
 
 try {
-  // формат m: URL-encoded строка "id:Имя,id:Имя,..."
-  const raw = decodeURIComponent(membersEncoded);
-  raw.split(",").forEach(pair => {
-    const [id, ...nameParts] = pair.split(":");
-    const name = nameParts.join(":");
-    if (id && name) members.push({ id: id.trim(), name: name.trim() });
+  const raw = decodeURIComponent(membersParam); // "id:Имя,id:Имя,..."
+  raw.split(",").forEach(s => {
+    const i = s.indexOf(":");
+    if (i > 0) {
+      const id = s.slice(0, i).trim();
+      const name = s.slice(i + 1).trim();
+      if (id) members.push({ id, name });
+    }
   });
-} catch(e) {
-  // оставим пустым список — мини-ап покажет подсказку
+} catch (e) {
+  // игнорим: список останется пустым
 }
 
+// ----- рендер чекбоксов -----
 const exclBox = document.getElementById("exclude-list");
 function renderMembers(list) {
-  const box = document.getElementById("exclude-list");
-  box.innerHTML = "";
+  exclBox.innerHTML = "";
   if (!list.length) {
-    box.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились чекбоксы.</div>`;
+    exclBox.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились чекбоксы.</div>`;
     return;
   }
   list.forEach(m => {
@@ -33,18 +36,18 @@ function renderMembers(list) {
       <div class="name">${m.name}</div>
       <div class="id">${m.id}</div>
     `;
-    box.appendChild(row);
+    exclBox.appendChild(row);
   });
 }
+renderMembers(members);
 
-
-
-// переключатель «выбрать/снять всех»
+// выбрать/снять всех
 document.getElementById("toggle-all").addEventListener("click", () => {
   const boxes = exclBox.querySelectorAll('input[type="checkbox"]');
   const allChecked = [...boxes].every(b => b.checked);
-  boxes.forEach(b => b.checked = !allChecked);
+  boxes.forEach(b => (b.checked = !allChecked));
 });
+
 
 // отправка данных на бота
 document.getElementById("create").addEventListener("click", () => {
