@@ -23,10 +23,11 @@ try {
 // ----- рендер чекбоксов -----
 const exclBox = document.getElementById("exclude-list");
 function renderMembers(list) {
-  exclBox.innerHTML = "";
-  if (!list.length) {
-    exclBox.innerHTML = `<div class="muted">Список участников не передан. Открой через /app, чтобы подставились чекбоксы.</div>`;
-    return;
+  row.innerHTML = `
+  <input type="checkbox" value="${m.id}">
+  <span class="name">${m.name}</span>
+  <span class="id">${m.id}</span>
+`;
   }
   list.forEach(m => {
     const row = document.createElement("div");
